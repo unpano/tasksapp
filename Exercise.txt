@@ -1,0 +1,17 @@
+Goal: Build a tiny tasks app (no auth). Clean CRUD, simple filters/search, tidy UI.
+ 
+What to build:
+ 
+Backend (Spring Boot 3, Java 21, H2, + Local Cache for selected tasks):
+Entity: Task { id, title, description?, status[OPEN|IN_PROGRESS|DONE], priority[LOW|MEDIUM|HIGH], dueDate?, createdAt, updatedAt }
+Endpoints:
+GET /api/tasks?status=&priority=&q=&page=&size=&sort=updatedAt,DESC
+POST /api/tasks
+PUT /api/tasks/{id}
+DELETE /api/tasks/{id}
+Requirements: Bean Validation (title and description required), proper status codes, CORS for http://localhost:5173, seed ~5 tasks on startup.
+ 
+Frontend (Vue 3 + Vite, TypeScript preferred, Pinia for state):
+Single page listing tasks in a table/list with columns: Title, Status, Priority, Due, Updated, Actions.
+Create task (quick add), inline edit status/priority/title, delete with confirm.
+Filters: status, priority, text search (q on title/description). Sort by Updated (toggle ok).
