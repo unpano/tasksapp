@@ -7,6 +7,9 @@ import com.example.tasksapp.mapper.TaskMapper;
 import com.example.tasksapp.model.Task;
 import com.example.tasksapp.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,13 @@ public class TaskService {
         return tasks.map(taskMapper::toResponse);
     }
 
+    @Cacheable(value = "taskById", key = "#id")
+    public TaskResponse getTaskById(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
+        return taskMapper.toResponse(task);
+    }
+
     @Transactional
     public TaskResponse createTask(TaskCreateRequest request) {
         Task task = taskMapper.toEntity(request);
@@ -32,6 +42,7 @@ public class TaskService {
     }
 
     @Transactional
+    @CachePut(value = "taskById", key = "#id")
     public TaskResponse updateTask(Long id, TaskUpdateRequest request) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
@@ -42,6 +53,7 @@ public class TaskService {
     }
 
     @Transactional
+    @CacheEvict(value = "taskById", key = "#id")
     public void deleteTask(Long id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
