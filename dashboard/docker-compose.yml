@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tasks-dashboard
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - tasks-network
+
+  backend:
+    image: tasks-backend:latest  # Replace with your backend image name
+    container_name: tasks-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - tasks-network
+
+networks:
+  tasks-network:
+    driver: bridge
